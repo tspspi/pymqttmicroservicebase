@@ -32,9 +32,9 @@ The most simple usage possible just registers topic handlers and reacts to the
 received messages.
 
 ```
-from mqttservice.mqttbaseservice import MQTTBaseService
+from mqttservice import mqttbaseservice
 
-class EchoService(MQTTBaseService):
+class EchoService(mqttbaseservice.MQTTBaseService):
 	def __init__(self):
 		super().__init__(
 			applicationName = "MQTTEchoService",
@@ -46,7 +46,7 @@ class EchoService(MQTTBaseService):
 
 	def _handleEchoRequestMessage(self, topic, msg):
         self._logger.debug("Received echo request")
-		self.mqttPublish('echoservice/reply', { 'some' : "payload", 'will', "be serialized", 'to' : "JSON from dict" })
+		self.mqttPublish('echoservice/reply', { 'some' : "payload", 'will' : "be serialized", 'to' : "JSON from dict" })
 
 	def __enter__(self):
 		return self
