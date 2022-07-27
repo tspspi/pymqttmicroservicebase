@@ -39,6 +39,7 @@ class MQTTBaseService:
 
 		self._rereadConfig = True
 		self._terminate = False
+		self._terminated = False
 
 		self._configuration = None
 		self._mqtt = None
@@ -62,6 +63,12 @@ class MQTTBaseService:
 		pass
 
 	def _mqttConnected(self):
+		pass
+
+	def _mqttDisconnected(self):
+		pass
+
+	def _serviceShutdown(self):
 		pass
 
 	# Utility methods
@@ -176,6 +183,7 @@ class MQTTBaseService:
 					self._mqtt = mqtt.Client()
 					self._mqtt.on_connect = self._mqtt_on_connect
 					self._mqtt.on_message = self._mqtt_on_message
+					self._mqtt.on_disconnect = self._mqtt_on_disconnect
 					if (self._configuration['mqtt']['user'] is not None) and (self._configuration['mqtt']['password'] is not None):
 						self._mqtt.username_pw_set(self._configuration['mqtt']['user'], self._configuration['mqtt']['password'])
 					self._mqtt.connect(self._configuration['mqtt']['broker'], self._configuration['mqtt']['port'])
@@ -186,6 +194,24 @@ class MQTTBaseService:
 			if self._terminate:
 				self._logger.info("Terminating on user request")
 				break
+
+			# Currently this is a busy waiting loop
+			time.sleep(0.5)
+
+		if self._mqtt:
+			self._logger.debug("Disconnecting from MQTT")
+			self._mqtt.disconnect()
+			while not self._terminated:
+				time.sleep(1)
+			self._mqtt.loop_stop()
+
+		self._serviceShutdown()
+		self._logger.info("Shut down service")
+
+	def _mqtt_on_disconnect(self, client, userdata, rc):
+		self._mqttDisconnected()
+		if self._terminate:
+			self._terminated = True
 
 	def _mqtt_on_connect(self, client, userdata, flags, rc):
 		if rc == 0:
