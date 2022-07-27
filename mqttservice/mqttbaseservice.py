@@ -64,8 +64,25 @@ class MQTTBaseService:
 	def _mqttConnected(self):
 		pass
 
+	# Utility methods
 
+	def mqttPublish(self, topic, payload = None, qos = 0, retain = False, prependBaseTopic = True):
+		if self._mqtt:
+			if prependBaseTopic:
+				topic = self._configuration['mqtt']['basetopic'] + topic
+			if payload is not None:
+				if isinstance(payload, dict):
+					payload = json.dumps(payload)
+			try:
+				if payload is not None:
+					self._mqtt.publish(topic, payload = payload, qos = qos, retain = retain)
+				else:
+					self._mqtt.publish(topic, qos = qos, retain = retain)
+				self._logger.debug(f"Published to {topic} (QOS {qos}, Retained: {retain})")
+			except Exception as e:
+				self._logger.error(f"Failed to publish to {topic} ({e})")
 
+	# Internal methods
 
 	def __validateConfiguration(self, newConfiguration):
 		# Check for MQTT configuration
