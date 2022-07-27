@@ -46,11 +46,11 @@ class MQTTPatternMatcher:
 		# Topic applies
 		return True
 
-	def callHandlers(self, topic, message):
+	def callHandlers(self, topic, message, basetopic = ""):
 		for regHandler in self._handlers:
-			if self._checkTopicMatch(regHandler['pattern'], topic):
+			if self._checkTopicMatch(basetopic + regHandler['pattern'], topic):
 				if isinstance(regHandler['handler'], list):
-					for handler in regHandler:
-						handler(message)
+					for handler in regHandler['handler']:
+						handler(topic, message)
 				elif callable(regHandler['handler']):
-					regHandler['handler'](message)
+					regHandler['handler'](topic, message)

@@ -162,6 +162,7 @@ class MQTTBaseService:
 					if (self._configuration['mqtt']['user'] is not None) and (self._configuration['mqtt']['password'] is not None):
 						self._mqtt.username_pw_set(self._configuration['mqtt']['user'], self._configuration['mqtt']['password'])
 					self._mqtt.connect(self._configuration['mqtt']['broker'], self._configuration['mqtt']['port'])
+					self._mqtt.loop_start()
 
 				self._configurationReloaded()
 
@@ -186,6 +187,7 @@ class MQTTBaseService:
 			self._logger.warning(f"Failed to connect to {self._configuration['mqtt']['broker']}:{self._configuration['mqtt']['port']} as {self._configuration['mqtt']['user']} (code {rc})")
 
 	def _mqtt_on_message(self, client, userdata, msg):
+		self._logger.debug(f"Received message on {msg.topic}")
 		try:
 			msg.payload = json.loads(str(msg.payload.decode('utf-8', 'ignore')))
 		except Exception as e:
@@ -196,7 +198,7 @@ class MQTTBaseService:
 			self._logger.warning(f"Dropping message to {msg.topic} since no handlers are registered")
 			return
 
-		self._mqttPatternMatcher(msg.topic, msg)
+		self._mqttPatternMatcher.callHandlers(msg.topic, msg, self._configuration['mqtt']['basetopic'])
 
 	def _signalSigHup(self, *args):
 		self._rereadConfig = True
