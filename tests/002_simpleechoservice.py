@@ -7,9 +7,9 @@ class EchoService(MQTTBaseService):
 			applicationName = "MQTTEchoService",
 
 			topicHandlers = [
-				{ 'topic' : '/echoservice/echo',    'handler' : [ self._handleEchoRequestMessage ] },
-				{ 'topic' : '/echoservice/version', 'handler' : [ self._handleEchoVersionRequest ] },
-				{ 'topic' : '/echoservice/echon/#', 'handler' : [ self._handleEchoVersionRequest ] }
+				{ 'topic' : 'echoservice/echo',    'handler' : [ self._handleEchoRequestMessage ] },
+				{ 'topic' : 'echoservice/version', 'handler' : [ self._handleEchoVersionRequest ] },
+				{ 'topic' : 'echoservice/echon/#', 'handler' : [ self._handleEchoVersionRequest ] }
 			]
 		)
 
