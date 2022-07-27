@@ -58,7 +58,7 @@ class MQTTBaseService:
 	def _configurationReloaded_Prepare(self, newConfiguration):
 		pass
 
-	def _configurationReloaded(self, newConfiguration):
+	def _configurationReloaded(self):
 		pass
 
 	def _mqttConnected(self):
