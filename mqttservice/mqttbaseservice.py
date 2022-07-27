@@ -77,7 +77,7 @@ class MQTTBaseService:
 			self._logger.error("Configuration missing broker in mqtt section")
 			return False
 		if 'port' not in newConfiguration['mqtt']:
-			self._logger.warn("Configuration missing broker port in mqtt section, setting to 1883")
+			self._logger.warning("Configuration missing broker port in mqtt section, setting to 1883")
 			newConfiguration['mqtt']['port'] = 1883
 		else:
 			try:
@@ -95,13 +95,13 @@ class MQTTBaseService:
 			self._logger.error("MQTT Configuration missing user credentials (password)")
 			newConfiguration['mqtt']['password'] = None
 		if 'basetopic' not in newConfiguration['mqtt']:
-			self._logger.warn("MQTT base topic not set. Using empty")
+			self._logger.warning("MQTT base topic not set. Using empty")
 			newConfiguration['mqtt']['basetopic'] = ""
 		elif len(newConfiguration['mqtt']['basetopic']) < 1:
-			self._logger.warn("MQTT base topic not set. Using empty")
+			self._logger.warning("MQTT base topic not set. Using empty")
 			newConfiguration['mqtt']['basetopic'] = ""
 		elif newConfiguration['mqtt']['basetopic'][-1] != '/':
-			self._logger-warn("MQTT base topic not ending in trailing slash. Appending")
+			self._logger.warning("MQTT base topic not ending in trailing slash. Appending")
 			newConfiguration['mqtt']['basetopic'] = newConfiguration['mqtt']['basetopic'] + "/"
 
 		# Call implementations check routine ...
@@ -171,7 +171,7 @@ class MQTTBaseService:
 
 	def _mqtt_on_connect(self, client, userdata, flags, rc):
 		if rc == 0:
-			self._logger.warn(f"Connected to {self._configuration['mqtt']['broker']}:{self._configuration['mqtt']['port']} as {self._configuration['mqtt']['user']}")
+			self._logger.warning(f"Connected to {self._configuration['mqtt']['broker']}:{self._configuration['mqtt']['port']} as {self._configuration['mqtt']['user']}")
 
 			# Run subscriptions
 			if self._topicSubscribe:
@@ -183,7 +183,7 @@ class MQTTBaseService:
 
 			self._mqttConnected()
 		else:
-			self._logger.warn(f"Failed to connect to {self._configuration['mqtt']['broker']}:{self._configuration['mqtt']['port']} as {self._configuration['mqtt']['user']} (code {rc})")
+			self._logger.warning(f"Failed to connect to {self._configuration['mqtt']['broker']}:{self._configuration['mqtt']['port']} as {self._configuration['mqtt']['user']} (code {rc})")
 
 	def _mqtt_on_message(self, client, userdata, msg):
 		try:
@@ -193,7 +193,7 @@ class MQTTBaseService:
 			pass
 
 		if self._mqttPatternMatcher is None:
-			self._logger.warn(f"Dropping message to {msg.topic} since no handlers are registered")
+			self._logger.warning(f"Dropping message to {msg.topic} since no handlers are registered")
 			return
 
 		self._mqttPatternMatcher(msg.topic, msg)
