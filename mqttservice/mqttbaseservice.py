@@ -18,11 +18,11 @@ class MQTTBaseService:
 	def __init__(
 		self,
 
-		applicationName = 'MQTTBaseService',
-		applicationNameFile = "mqttbaseservice",
+		applicationName      = 'MQTTBaseService',
+		applicationNameFile  = "mqttbaseservice",
 
-		topicHandlers = [ ],
-		topicSubscribe = None
+		topicHandlers        = [ ],
+		topicSubscribe       = None
 	):
 		"""Initialize the base MQTT service
 
