@@ -26,6 +26,12 @@ register or unregister from topics. Also in it's current implementation it linea
 iterates over all registered handlers for each message and does not use any kind
 of trie.
 
+## Installation
+
+```
+pip install pymqttmicroservicebase-tspspi
+```
+
 ## Usage
 
 The most simple usage possible just registers topic handlers and reacts to the
